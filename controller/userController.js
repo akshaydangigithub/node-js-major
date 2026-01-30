@@ -3,9 +3,10 @@ import UserModel from "../model/userModel.js"
 import ErrorHandler from "../utils/ErrorHandler.js";
 import { successResponse } from "../utils/response.js";
 import bcrypt from "bcrypt"
+import { sendToken } from "../utils/sendToken.js";
 
 export const RegisterUser = catchAsyncErrors(
-    async (req, res, next) => {   
+    async (req, res) => {
 
         const salt = await bcrypt.genSalt(10);
 
@@ -18,7 +19,29 @@ export const RegisterUser = catchAsyncErrors(
 
         if (newUser) {
             successResponse(res, 201, "User Created Succesfully", newUser)
-        } 
+        }
+    }
+)
+
+export const LoginUser = catchAsyncErrors(
+    async (req, res, next) => {
+        const { email, password } = req.body;
+
+        const user = await UserModel.findOne({ email });
+
+        if (!user) return next(new ErrorHandler("Invalide credetials", 400))
+
+        const isPasswordMatched = await bcrypt.compare(password, user.password);
+
+        if (!isPasswordMatched) return next(new ErrorHandler("Invalide credetials", 400));
+
+        let payload = {
+            id: user._id,
+            email: user.email,
+            role: user.role
+        }
+
+        sendToken(payload, user, 200, res)
 
     }
 )

@@ -5,7 +5,8 @@ dotenv.config()
 import ConnectDB from "./config/db.js"
 import morgan from "morgan"
 import ErrorHandler from "./utils/ErrorHandler.js"
-
+import session from "express-session";
+import cookieParser from "cookie-parser"
 
 const app = express();
 
@@ -18,6 +19,16 @@ ConnectDB()
 app.use(morgan("tiny"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
+
+app.use(
+    session({
+        resave: true,
+        saveUninitialized: false,
+        secret: process.env.EXPRESS_SESSION_SECRET
+    })
+);
+
+app.use(cookieParser())
 
 
 app.get("/", (req, res) => {
