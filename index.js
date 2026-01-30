@@ -4,7 +4,7 @@ dotenv.config()
 
 import ConnectDB from "./config/db.js"
 import morgan from "morgan"
-// import ErrorHandler from "./utils/ErrorHandler.js"
+import ErrorHandler from "./utils/ErrorHandler.js"
 
 
 const app = express();
@@ -25,27 +25,20 @@ app.get("/", (req, res) => {
 })
 
 
-// app.all('*', (req, res, next)=>{
-//     next(new ErrorHandler("Requested route is not available", 404))
-// })
-
-
-
 // =============== ROUTES ====================
 
 import UserRoute from "./route/userRoute.js";
-// import { genratedErrors } from "./middlewares/error.js"
+import { genratedError } from "./middlewares/error.js"
 
 app.use("/api/user", UserRoute)
 
 
-// app.use('*', (req, res) => {
-//   res.status(404).send('404 - Page not found');
-// });
+app.all(/(.*)/, (req, res, next)=>{
+    next(new ErrorHandler("Requested route in not available", 404))
+})
 
-// app.use(genratedErrors)
+app.use(genratedError)
 
 app.listen(process.env.PORT, () => {
     console.log("YOUR APP IS SUCCESSFULLY RUNNING !!");
-
 })
