@@ -8,7 +8,6 @@ const UserSchema = new mongoose.Schema({
     email: {
         type: String,
         unique: true,
-        autoIndex: true,
         required: [true, "Email is required"]
     },
     password: {
@@ -19,7 +18,34 @@ const UserSchema = new mongoose.Schema({
         type: String,
         enum: ["student", "employer", "admin"],
         default: "student"
+    },
+    gender:{
+        type: String,
+        enum:["male", "female", "other"],
+        required: [true, "Gender is required"]
+    },
+    phone:{
+        type: String,
+        unique: true,
+        maxLength:[10, "Phone number cannot exceed 10 digits"],
+        minLength:[10, "Phone number must be at least 10 digits"],
+        required: [true, "Phone number is required"]
+    },
+    languages:[
+        {
+            name: String
+        }
+    ],
+    profileImage:{
+        type: String,
+        default: ""
+    },
+    linkdinProfile:{
+        type: String,
+        default: ""
     }
+},{
+    timestamps: true
 })
 
 const UserModel = mongoose.model("User", UserSchema);

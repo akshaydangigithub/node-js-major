@@ -1,5 +1,6 @@
 import { catchAsyncErrors } from "../middlewares/catchAsyncErrors.js";
 import UserModel from "../model/userModel.js"
+import StudentModel from "../model/studentModel.js"
 import ErrorHandler from "../utils/ErrorHandler.js";
 import { successResponse } from "../utils/response.js";
 import bcrypt from "bcrypt"
@@ -18,6 +19,11 @@ export const RegisterUser = catchAsyncErrors(
         });
 
         if (newUser) {
+
+            if (newUser.role === "student") {
+                await StudentModel.create({ userId: newUser._id });
+            }
+
             successResponse(res, 201, "User Created Succesfully", newUser)
         }
     }

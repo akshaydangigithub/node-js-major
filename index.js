@@ -39,9 +39,11 @@ app.get("/", (req, res) => {
 // =============== ROUTES ====================
 
 import UserRoute from "./route/userRoute.js";
+import StudentRoute from "./route/studentRoute.js";
 import { genratedError } from "./middlewares/error.js"
 
 app.use("/api/user", UserRoute)
+app.use("/api/student", StudentRoute)
 
 
 app.all(/(.*)/, (req, res, next)=>{
