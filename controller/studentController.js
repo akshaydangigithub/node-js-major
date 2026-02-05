@@ -4,93 +4,208 @@ import UserModel from "../model/userModel.js";
 import ErrorHandler from "../utils/ErrorHandler.js";
 import { successResponse } from "../utils/response.js";
 
+export const Init = catchAsyncErrors(async (req, res, next) => {
+  res.json({
+    success: true,
+    message: "Student Route is working",
+  });
+});
 
-export const Init = catchAsyncErrors(
-    async (req, res, next) => {
-        res.json({
-            success: true,
-            message: "Student Route is working"
-        })
-    }
-)
+export const CreateEducation = catchAsyncErrors(async (req, res, next) => {
+  const user = await UserModel.findById(req.user.id);
 
+  if (!user) return next(new ErrorHandler("User not found", 404));
 
-export const CreateEducation = catchAsyncErrors(
-    async (req, res, next) => {
+  let student = await StudentModel.findOne({ userId: req.user.id });
 
-        const user = await UserModel.findById(req.user.id);
+  if (!student) return next(new ErrorHandler("Student profile not found", 404));
 
-        if (!user) return next(new ErrorHandler("User not found", 404));
+  let educationDate = req.body;
 
-        let student = await StudentModel.findOne({ userId: req.user.id });
+  student.education.push(educationDate);
 
-        if (!student) return next(new ErrorHandler("Student profile not found", 404));
+  await student.save();
 
-        let educationDate = req.body;
+  successResponse(res, 201, "Education added successfully", student);
+});
 
-        student.education.push(educationDate);
+export const UpdateEducation = catchAsyncErrors(async (req, res, next) => {
+  let student = await StudentModel.findOne({ userId: req.user.id });
 
-        await student.save();
+  if (!student) return next(new ErrorHandler("Student profile not found", 404));
 
-        successResponse(res, 201, "Education added successfully", student);
+  let educationId = req.params.id;
 
-    }
-)
+  let education = student.education.id(educationId);
 
-export const UpdateEducation = catchAsyncErrors(
-    async (req, res, next) => {
-        let student = await StudentModel.findOne({ userId: req.user.id });
+  if (!education) return next(new ErrorHandler("Education not found", 404));
 
-        if (!student) return next(new ErrorHandler("Student profile not found", 404));
+  Object.keys(req.body).forEach((key) => {
+    education[key] = req.body[key];
+  });
 
-        let educationId = req.params.id;
+  await student.save();
 
-        let education = student.education.id(educationId);
+  successResponse(res, 200, "Education updated successfully", education);
+});
 
-        if (!education) return next(new ErrorHandler("Education not found", 404))
+export const DeleteEducation = catchAsyncErrors(async (req, res, next) => {
+  let student = await StudentModel.findOne({ userId: req.user.id });
 
-        Object.keys(req.body).forEach(key => {
-            education[key] = req.body[key]
-        })
+  if (!student) return next(new ErrorHandler("Student profile not found", 404));
 
-        await student.save()
+  let educationId = req.params.id;
 
-        successResponse(res, 200, "Education updated successfully", education)
-    }
-)
+  let education = student.education.id(educationId);
 
-export const DeleteEducation = catchAsyncErrors(
-    async (req,res,next)=>{
-         let student = await StudentModel.findOne({ userId: req.user.id });
+  if (!education) return next(new ErrorHandler("Education not found", 404));
 
-        if (!student) return next(new ErrorHandler("Student profile not found", 404));
+  await education.deleteOne();
 
-        let educationId = req.params.id;
+  await student.save();
 
-        let education = student.education.id(educationId);
+  successResponse(res, 200, "Education deleted successfully");
+});
 
-        if (!education) return next(new ErrorHandler("Education not found", 404));
+export const CreateWorkExperience = catchAsyncErrors(async (req, res, next) => {
+  let student = await StudentModel.findOne({ userId: req.user.id });
 
-        await education.deleteOne();
+  if (!student) return next(new ErrorHandler("Student profile not found", 404));
 
-        await student.save()
+  let workExperienceData = req.body;
 
-        successResponse(res, 200, "Education deleted successfully")
-    }
-)
+  student.workExperience.push(workExperienceData);
 
-export const CreateWorkExperience = catchAsyncErrors(
-    async (req, res, next) => {
-        let student = await StudentModel.findOne({ userId: req.user.id });
+  await student.save();
 
-        if (!student) return next(new ErrorHandler("Student profile not found", 404));
-        
-        let workExperienceData = req.body;
+  successResponse(res, 201, "Work experience added successfully", student);
+});
 
-        student.workExperience.push(workExperienceData);
-        
-        await student.save();
+export const UpdateWorkExperience = catchAsyncErrors(async (req, res, next) => {
+  let student = await StudentModel.findOne({ userId: req.user.id });
 
-        successResponse(res, 201, "Work experience added successfully", student);
-    }
-)
+  if (!student) return next(new ErrorHandler("Student profile not found", 404));
+
+  let workExperienceId = req.params.id;
+
+  let workExperience = student.workExperience.id(workExperienceId);
+
+  if (!workExperience)
+    return next(new ErrorHandler("Work experience not found", 404));
+
+  Object.keys(req.body).forEach((key) => {
+    workExperience[key] = req.body[key];
+  });
+
+  await student.save();
+
+  successResponse(
+    res,
+    200,
+    "Work experience updated successfully",
+    workExperience,
+  );
+});
+
+export const DeleteWorkExperience = catchAsyncErrors(async (req, res, next) => {
+  let student = await StudentModel.findOne({ userId: req.user.id });
+
+  if (!student) return next(new ErrorHandler("Student profile not found", 404));
+
+  let workExperienceId = req.params.id;
+
+  let workExperience = student.workExperience.id(workExperienceId);
+
+  if (!workExperience)
+    return next(new ErrorHandler("Work experience not found", 404));
+
+  await workExperience.deleteOne();
+
+  await student.save();
+
+  successResponse(res, 200, "Work experience deleted successfully");
+});
+
+export const CreateProject = catchAsyncErrors(async (req, res, next) => {
+  let student = await StudentModel.findOne({ userId: req.user.id });
+
+  if (!student) return next(new ErrorHandler("Student profile not found", 404));
+
+  let projectData = req.body;
+
+  student.projects.push(projectData);
+
+  await student.save();
+
+  successResponse(res, 201, "Project added successfully", student);
+});
+
+export const UpdateProject = catchAsyncErrors(async (req, res, next) => {
+  let student = await StudentModel.findOne({ userId: req.user.id });
+
+  if (!student) return next(new ErrorHandler("Student profile not found", 404));
+
+  let projectId = req.params.id;
+
+  let project = student.projects.id(projectId);
+
+  if (!project) return next(new ErrorHandler("Project not found", 404));
+
+  Object.keys(req.body).forEach((key) => {
+    project[key] = req.body[key];
+  });
+
+  await student.save();
+
+  successResponse(res, 200, "Project updated successfully", project);
+});
+
+export const DeleteProject = catchAsyncErrors(async (req, res, next) => {
+  let student = await StudentModel.findOne({ userId: req.user.id });
+
+  if (!student) return next(new ErrorHandler("Student profile not found", 404));
+
+  let projectId = req.params.id;
+
+  let project = student.projects.id(projectId);
+
+  if (!project) return next(new ErrorHandler("Project not found", 404));
+
+  await project.deleteOne();
+
+  await student.save();
+
+  successResponse(res, 200, "Project deleted successfully");
+});
+
+export const CreateSkill = catchAsyncErrors(async (req, res, next) => {
+  let student = await StudentModel.findOne({ userId: req.user.id });
+
+  if (!student) return next(new ErrorHandler("Student profile not found", 404));
+
+  let skillData = req.body;
+
+  student.skills.push(skillData);
+
+  await student.save();
+
+  successResponse(res, 201, "Skill added successfully", student);
+});
+
+export const DeleteSkill = catchAsyncErrors(async (req, res, next) => {
+  let student = await StudentModel.findOne({ userId: req.user.id });
+
+  if (!student) return next(new ErrorHandler("Student profile not found", 404));
+
+  let skillId = req.params.id;
+
+  let skill = student.skills.id(skillId);
+
+  if (!skill) return next(new ErrorHandler("Skill not found", 404));
+
+  await skill.deleteOne();
+
+  await student.save();
+
+  successResponse(res, 200, "Skill deleted successfully");
+});
