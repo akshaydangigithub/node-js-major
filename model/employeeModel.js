@@ -20,6 +20,12 @@ const employeeSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    internships: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Internship"
+      }
+    ]
   },
   {
     timestamps: true,

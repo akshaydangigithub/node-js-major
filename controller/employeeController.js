@@ -27,3 +27,13 @@ export const UpdateEmployee = catchAsyncErrors(async (req, res, next) => {
 
   successResponse(res, 200, "Employee updated successfully", employee);
 });
+
+
+export const GetProfile = catchAsyncErrors(async (req, res, next) => {
+  const employee = await EmployeeModel.findOne({ userId: req.user.id }).populate('userId')
+
+  if (!employee) return next(new ErrorHandler("Employee not found", 404));
+
+  successResponse(res, 200, "Employee found", employee)
+
+})

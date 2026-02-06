@@ -1,7 +1,8 @@
 import express from "express";
 import { isAuthenticated } from "../middlewares/auth.js";
-import { UpdateEmployee } from "../controller/employeeController.js";
+import { UpdateEmployee, GetProfile } from "../controller/employeeController.js";
 import { upload } from "../config/multer.js";
+import { isApproved } from "../middlewares/isApproved.js";
 
 const router = express.Router();
 
@@ -12,5 +13,7 @@ router.put(
   upload.single("logo"),
   UpdateEmployee,
 );
+
+router.get("/me", isAuthenticated, GetProfile)
 
 export default router;

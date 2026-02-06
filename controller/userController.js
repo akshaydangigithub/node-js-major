@@ -33,7 +33,7 @@ export const RegisterUser = catchAsyncErrors(async (req, res) => {
 export const LoginUser = catchAsyncErrors(async (req, res, next) => {
   const { email, password } = req.body;
 
-  const user = await UserModel.findOne({ email });
+  const user = await UserModel.findOne({ email }).select('password')
 
   if (!user) return next(new ErrorHandler("Invalide credetials", 400));
 
