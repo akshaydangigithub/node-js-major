@@ -1,6 +1,6 @@
 import express from "express";
 import { isAuthenticated } from "../middlewares/auth.js";
-import { UpdateEmployee, GetProfile } from "../controller/employeeController.js";
+import { UpdateEmployee, GetProfile, CreateInternship } from "../controller/employeeController.js";
 import { upload } from "../config/multer.js";
 import { isApproved } from "../middlewares/isApproved.js";
 
@@ -15,5 +15,8 @@ router.put(
 );
 
 router.get("/me", isAuthenticated, GetProfile)
+
+// POST internship
+router.post("/create-internship", isAuthenticated, isApproved, CreateInternship)
 
 export default router;

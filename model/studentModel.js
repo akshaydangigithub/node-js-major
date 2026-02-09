@@ -44,6 +44,12 @@ const studentSchema = new mongoose.Schema({
         {
             name: String
         }
+    ],
+    internships: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Internship"
+        }
     ]
 })
 
