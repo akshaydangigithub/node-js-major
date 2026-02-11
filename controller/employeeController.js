@@ -62,3 +62,19 @@ export const CreateInternship = catchAsyncErrors(async (req, res, next) => {
   successResponse(res, 201, "Internship created successfully", internship)
 
 })
+
+export const UpdateInternship = catchAsyncErrors(async (req, res, next) => {
+
+  const internship = await InternshipModel.findById(id);
+
+  if (!internship) return next(new ErrorHandler("Internship not found", 404));
+
+  Object.keys(req.body).forEach((key) => {
+    internship[key] = req.body[key]
+  })
+
+  internship.save();
+
+  successResponse(res, 200, "Internship updated succesfully", internship)
+
+})

@@ -12,6 +12,7 @@ import {
   DeleteProject,
   CreateSkill,
   DeleteSkill,
+  ApplyInternship
 } from "../controller/studentController.js";
 import { isAuthenticated } from "../middlewares/auth.js";
 
@@ -51,5 +52,8 @@ router.post("/skill", isAuthenticated, CreateSkill);
 
 // delete skill
 router.delete("/skill/:id", isAuthenticated, DeleteSkill);
+
+// apply for internship
+router.post("/apply-internship/:id", isAuthenticated, ApplyInternship)
 
 export default router;

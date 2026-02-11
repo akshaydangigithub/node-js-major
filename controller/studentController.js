@@ -209,3 +209,19 @@ export const DeleteSkill = catchAsyncErrors(async (req, res, next) => {
 
   successResponse(res, 200, "Skill deleted successfully");
 });
+
+
+export const ApplyInternship = catchAsyncErrors(async (req, res, next) => {
+  const { id } = req.params;
+
+  const student = await StudentModel.findOne({ userId: req.user.id });
+
+  if (!student) return next(new ErrorHandler("Student not found", 404));
+
+  student.internships.push(id);
+
+  await student.save();
+
+  successResponse(res, 200, "Internship applies succesfully", student)
+
+})

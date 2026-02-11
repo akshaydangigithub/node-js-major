@@ -19,3 +19,4 @@ export const isAuthenticated = catchAsyncErrors(
         next();
     }
 )
+

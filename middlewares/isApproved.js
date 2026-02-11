@@ -22,3 +22,15 @@ export const isApproved = catchAsyncErrors(
 
     }
 )
+
+
+export const isAdmin = catchAsyncErrors(async (req, res, next) => {
+    const { role } = req.user
+
+    if (role === "admin") {
+        next()
+    } else {
+        return next(new ErrorHandler("You are not admin", 500))
+    }
+
+})

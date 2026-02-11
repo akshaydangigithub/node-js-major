@@ -39,16 +39,18 @@ app.get("/", (req, res) => {
 import UserRoute from "./route/userRoute.js";
 import StudentRoute from "./route/studentRoute.js";
 import EmployeeRoute from "./route/employeeRoute.js";
-import { genratedError } from "./middlewares/error.js";
+import AdminRoute from "./route/adminRoute.js"
 
 app.use("/api/user", UserRoute);
 app.use("/api/student", StudentRoute);
 app.use("/api/employee", EmployeeRoute);
+app.use("/api/admin", AdminRoute)
 
 app.all(/(.*)/, (req, res, next) => {
   next(new ErrorHandler("Requested route in not available", 404));
 });
 
+import { genratedError } from "./middlewares/error.js";
 app.use(genratedError);
 
 app.listen(process.env.PORT, () => {
