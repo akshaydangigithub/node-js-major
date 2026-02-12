@@ -7,6 +7,7 @@ import ErrorHandler from "../utils/ErrorHandler.js";
 import { successResponse } from "../utils/response.js";
 import bcrypt from "bcrypt";
 import { sendToken } from "../utils/sendToken.js";
+import uploadToImageKit from "../utils/uploadToImageKit.js";
 
 export const RegisterUser = catchAsyncErrors(async (req, res, next) => {
 
@@ -60,3 +61,51 @@ export const LoginUser = catchAsyncErrors(async (req, res, next) => {
 
   sendToken(payload, user, 200, res);
 });
+
+
+export const UpdateUser = catchAsyncErrors(async (req, res, next) => {
+
+
+  const user = await UserModel.findById(req.user.id);
+
+  if (!user) return next(new ErrorHandler("User not found", 404));
+
+  if (req.body.email) return next(new ErrorHandler("You can not update email", 500))
+
+  if (req.body.role) return next(new ErrorHandler("You can not update role", 500))
+
+  if (req.body.password) return next(new ErrorHandler("You can not update password", 500));
+
+  Object.keys(req.body).forEach((key) => {
+    user[key] = req.body[key]
+  })
+
+  await user.save();
+
+  successResponse(res, 200, "User updated succesfully", user)
+
+
+})
+
+export const UpdateProfileImage = catchAsyncErrors(async (req, res, next) => {
+  const file = req.file;
+
+  if (!file) return next(new ErrorHandler("Profile image is required", 500));
+
+  const user = await UserModel.findById(req.user.id);
+
+  if (!user) return next(new ErrorHandler("User not found", 404));
+
+  const uploadedProfile = await uploadToImageKit({
+    fileBuffer: file.buffer,
+    fileName: file.originalname,
+    folder: "/internshala",
+  });
+
+  user.profileImage = uploadedProfile.url;
+
+  await user.save();
+
+  successResponse(res, 200, "Profile image uploaded succesfully", user)
+
+})

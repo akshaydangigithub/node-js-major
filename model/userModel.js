@@ -31,11 +31,9 @@ const UserSchema = new mongoose.Schema(
       minLength: [10, "Phone number must be at least 10 digits"],
       required: [true, "Phone number is required"],
     },
-    languages: [
-      {
-        name: String,
-      },
-    ],
+    languages: {
+      type: [String]
+    },
     profileImage: {
       type: String,
       default: "",
